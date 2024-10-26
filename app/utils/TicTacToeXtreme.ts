@@ -84,8 +84,10 @@ export class TicTacToeXtreme {
     return this._checkIfWon(play, gameString);
   }
 
-  play(data: { game: number; row: number; col: number; play: "x" | "o" }): string {
+  play(data: { game: number; row: number; col: number; play: "x" | "o" }): {fen: string; outCome: string; end: boolean} {
     const { game, row, col, play } = data;
+    let result = play === "x" ? "O to play" : "X to play";
+    let end = false;
     let currentToken = this._token;
     const cellValue = currentToken[game].split("")[row * 3 + col];
     if (cellValue === "-") {
@@ -103,6 +105,8 @@ export class TicTacToeXtreme {
         currentToken[9] = wonGame.join("");
         if (this._checkIfWon(play, currentToken[9].split(""))) {
           currentToken[currentToken.length - 4] = play;
+          result = `Game Over: ${play === "x" ? "X" : "O"} Won!`;
+          end = true;
         }
       }
       if (this._checkIfDraw(currentToken[game].split(""))) {
@@ -114,11 +118,13 @@ export class TicTacToeXtreme {
           !this._possibilityOfWin(currentToken[9], "o")
         ) {
           currentToken[currentToken.length - 4] = "d";
+          result = `Game Over: It a Draw!`;
+          end = true;
         }
       }
       currentToken[currentToken.length - 2] = wonGame[row * 3 + col] === "-" ? (row * 3 + col).toString() : "-";
       this._fen = currentToken.join("|");
     }
-    return this._fen;
+    return {fen: this._fen, outCome: result, end};
   }
 }

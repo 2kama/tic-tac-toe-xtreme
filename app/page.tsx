@@ -1,21 +1,82 @@
 "use client";
 
-import { useState } from "react";
-import PlayGround from "./components/PlayGround";
-import { DEFAULT_FEN, TicTacToeXtreme } from "./utils/TicTacToeXtreme";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useCheckDB } from "./hooks/useCheckDB";
+import { addDoc, and, collection, db, doc, getDocs, limit, or, query, serverTimestamp, updateDoc, where } from "@/app/utils/firebase";
+import { DEFAULT_FEN } from "./utils/TicTacToeXtreme";
+
 
 export default function Home() {
-  const [currentFen, setCurrentFen] = useState(DEFAULT_FEN);
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [buttonDisable, setButtonDisable] = useState(false);
 
-  let game = new TicTacToeXtreme(currentFen);
+  const { setGame } = useCheckDB();
 
-  const onPlay = (data: { game: number; row: number; col: number; play: "x" | "o" }) => {
-    setCurrentFen(game.play(data));
-  };
+  const createGame = async (side: "x" | "o") => {
+    setButtonDisable(true);
+    await addDoc(collection(db, "games"), {
+      fen: [DEFAULT_FEN],
+      x: side === "x" ? name : "",
+      o: side === "o" ? name : "",
+      timestamp: serverTimestamp(),
+      end: false,
+      moves: [81],
+      outCome: "X to play",
+    }).then((docRef) => {
+      setGame(side, docRef.id);
+      router.push(`/game/${docRef.id}`);
+    });
+  }
+
+  const findGame = async () => {
+    setButtonDisable(true);
+    const q = query(
+      collection(db, "games"),
+      and(
+        or(where("x", "==", ""), where("o", "==", ""))
+      ),
+      limit(1)
+    );
+    const request = await getDocs(q);
+
+    if (request.docs.length) {
+      const gameData = request.docs[0];
+      const pickSide = gameData.data().x === "" ? "x" : "o";
+
+      updateDoc(doc(db, "games", gameData.id), {
+        [pickSide]: name,
+      }).then(() => {
+        setGame(pickSide, gameData.id);
+        router.push(`/game/${gameData.id}`);
+      });
+    } else {
+      setButtonDisable(false);
+      alert("No game found");
+    }
+  }
+
+  useEffect(() => {
+    if (name) {
+      setButtonDisable(false);
+    } else {
+      setButtonDisable(true);
+    }
+  }, [name]);
 
   return (
-    <div className="w-[60%]">
-      <PlayGround allowPlay={!game.isGameOver} onPlay={onPlay} gameId="123" fen={currentFen} />
-    </div>
-  );
+    <>
+      <button>
+         Play A Game
+      </button>
+
+      <div>
+        <input placeholder="Name" type="text" value={name} onChange={e => setName(e.target.value)} />
+        <button disabled={buttonDisable} onClick={() => createGame("x")}>Play as X</button>
+        <button disabled={buttonDisable} onClick={() => createGame("o")}>Play as O</button>
+        <button disabled={buttonDisable} onClick={findGame}>Find a Game</button>
+      </div>
+    </>
+  )
 }
