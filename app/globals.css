@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "Sedgwick Ave", cursive;
+  font-weight: 400;
+  font-style: normal;
+  width: 100%;
+  min-height: 100vh;
+}
+
 tr {
   border-bottom: 2px solid grey;
 }
