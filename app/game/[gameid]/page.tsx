@@ -7,6 +7,7 @@ import { db, doc, DocumentData, onSnapshot, updateDoc } from "@/app/utils/fireba
 import { useCheckDB } from "@/app/hooks/useCheckDB";
 import WaitingOnPlayer from "./WaitingOnPlayer";
 import AcceptChallenge from "./AcceptChallenge";
+import Outcome from "./Outcome";
 
 type Props = {
   params: { gameid: string };
@@ -18,13 +19,12 @@ export default function GamePage({ params: { gameid } }: Props) {
   const [isPlayer, setIsPlayer] = useState(false);
   const [acceptChallenge, showAcceptChallenge] = useState(false);
   const [history, setHistory] = useState(1);
-  const [showEndGame, setShowEndGame] = useState(false);
   const [titleText, setTitleText] = useState("Tic Tac Toe Xtreme");
 
   //UPDATE GAME
   const updateGame = (updateData: any) => {
     return updateDoc(doc(db, "games", gameid), {
-      ...updateData,
+      ...updateData
     });
   };
 
@@ -65,22 +65,29 @@ export default function GamePage({ params: { gameid } }: Props) {
       fen: [...gameData?.fen, result.fen],
       end: result.end,
       outCome: result.outCome,
-      moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col],
-    })
+      moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
+    });
   };
 
   return (
-    <>
+    <div className="flex flex-col w-full min-h-screen items-center justify-center">
       {gameData && (
         <>
-        <title>{titleText}</title>
-        {isPlayer && (gameData.x === "" || gameData.o === "") && (
-          <WaitingOnPlayer />
-        )}
-        {acceptChallenge && (
-          <AcceptChallenge updateGame={updateGame} playAs={gameData.x === "" ? "x" : "o"} gameid={gameid} />
-        )}
-          <div className="w-[60%]">
+          <title>{titleText}</title>
+          <a href="/" className="absolute top-0 left-0 p-4 bg-red-500 text-white">
+            &lt; Home
+          </a>
+          <div className="absolute top-2 text-xl">
+            X-tic-tac-toe
+          </div>
+          {(gameData.x === "" || gameData.o === "" || acceptChallenge) && (
+            <div className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>
+          )}
+          {isPlayer && (gameData.x === "" || gameData.o === "") && <WaitingOnPlayer />}
+          {acceptChallenge && (
+            <AcceptChallenge updateGame={updateGame} playAs={gameData.x === "" ? "x" : "o"} gameid={gameid} />
+          )}
+          <div className="w-[95%] sm:w-[70%] md:w-[60%] lg:w-[50%]">
             <PlayGround
               allowPlay={!gameData.end && game.turn === XorO(gameid) && gameData.x !== "" && gameData.o !== ""}
               onPlay={onPlay}
@@ -89,8 +96,9 @@ export default function GamePage({ params: { gameid } }: Props) {
               highlightSquares={[gameData.moves[gameData.moves.length - history]]}
             />
           </div>
+          <Outcome gameData={gameData} />
         </>
       )}
-    </>
+    </div>
   );
 }

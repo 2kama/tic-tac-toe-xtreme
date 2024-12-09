@@ -172,11 +172,11 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
     <table className="w-full flex flex-col">
       <tbody className="w-full flex flex-col">
         {rowColumn.map((row: number, rowIndex: number) => (
-          <tr key={`row-${rowIndex}`} className="flex">
+          <tr key={`row-${rowIndex}`} className="flex large">
             {rowColumn.map((column, colIndex) => (
               <td
                 key={`row-${rowIndex}--col-${colIndex}`}
-                className={`${isPlayable(rowIndex * 3 + colIndex) ? "bg-green-50 " : ""}p-[7%]`}
+                className={`${isPlayable(rowIndex * 3 + colIndex) ? "bg-green-50 " : ""}p-[4%] md:p-[7%] large`}
               >
                 <DisplayGameBox tokenSpread={ThreeByThreeBox(token)[row][column]} game={rowIndex * 3 + colIndex} />
                 <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />

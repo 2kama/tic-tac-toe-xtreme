@@ -13,11 +13,17 @@ body {
 tr {
   border-bottom: 2px solid grey;
 }
+tr.large {
+  border-bottom: 2px dashed grey;
+}
 tr:last-child {
   border-bottom: none;
 }
 td {
   border-right: 2px solid grey;
+}
+td.large {
+  border-right: 2px dashed grey;
 }
 td:last-child {
   border-right: 2px solid transparent;

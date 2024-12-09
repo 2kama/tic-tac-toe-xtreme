@@ -79,12 +79,12 @@ export default function Home() {
   const playAgameModal = () => {
     setShowPlayGameModal(true);
     setShowBg(true);
-  }
+  };
 
   const closeModal = () => {
     setShowPlayGameModal(false);
     setShowBg(false);
-  }
+  };
 
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
@@ -95,46 +95,46 @@ export default function Home() {
         <button> How To Play </button>
       </div>
 
-      {showBg && <div onClick={closeModal} className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>}
+      {showBg && (
+        <div onClick={closeModal} className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>
+      )}
 
       {showPlayGameModal && (
-        
-          <div className="flex flex-col bg-white fixed w-[400px] box-border p-5">
-            <h1 className="text-center text-xl mb-10">Play A Game</h1>
-            <input
-              className="w-full bg-gray-200 p-3 text-gray-500 mb-5"
-              placeholder="Player Name..."
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <div className="flex flex-row mb-14">
-              <button
-                className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-green-500 text-white"} p-3 w-full`}
-                disabled={buttonDisable}
-                onClick={() => createGame("x")}
-              >
-                Play as X
-              </button>
-              <button
-                className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-blue-500 text-white"} p-3 w-full`}
-                disabled={buttonDisable}
-                onClick={() => createGame("o")}
-              >
-                Play as O
-              </button>
-            </div>
-
-            <div className="text-red-600 text-sm w-full text-center">{errorMsg}</div>
+        <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
+          <h1 className="text-center text-xl mb-10 text-green-500">Play A Game</h1>
+          <input
+            className="w-full bg-gray-200 p-3 text-gray-500 mb-5"
+            placeholder="Player Name..."
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <div className="flex flex-row mb-14">
             <button
-              className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-red-500 text-white"} p-3 w-full`}
+              className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-green-500 text-white"} p-3 w-full`}
               disabled={buttonDisable}
-              onClick={findGame}
+              onClick={() => createGame("x")}
             >
-              Find a Game
+              Play as X
+            </button>
+            <button
+              className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-blue-500 text-white"} p-3 w-full`}
+              disabled={buttonDisable}
+              onClick={() => createGame("o")}
+            >
+              Play as O
             </button>
           </div>
-        
+
+          <div className="text-red-600 text-sm w-full text-center">{errorMsg}</div>
+          <button
+            className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-red-500 text-white"} p-3 w-full`}
+            disabled={buttonDisable}
+            onClick={findGame}
+          >
+            Find a Game
+          </button>
+        </div>
       )}
     </div>
   );
