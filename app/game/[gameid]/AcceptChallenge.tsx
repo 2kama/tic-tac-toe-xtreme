@@ -15,6 +15,8 @@ const AcceptChallenge = ({ updateGame, playAs, gameid }: Props) => {
     const updateData = { [playAs]: name };
     await updateGame(updateData).then(() => {
       setGame(playAs, gameid);
+    }).then(() => {
+        window.location.reload();
     });
   };
 
