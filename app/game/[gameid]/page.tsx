@@ -28,13 +28,13 @@ export default function GamePage({ params: { gameid } }: Props) {
     });
   };
 
-  const checkIfIsAPlayer = () => {
-    exist() && player(gameid) ? setIsPlayer(true) : setIsPlayer(false);
-  }
-
   //CHECK IF IS A PLAYER
   useEffect(() => {
-    checkIfIsAPlayer();
+    if (exist() && player(gameid)) {
+      setIsPlayer(true)
+    } else {
+      setIsPlayer(false)
+    }
   }, []);
 
   //CHECK IF GAME DOESN'T HAVE COMPLETE OPPONENTS
