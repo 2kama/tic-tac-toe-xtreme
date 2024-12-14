@@ -23,6 +23,7 @@ export default function RootLayout({
       <body>
         <div className="flex flex-col w-full min-h-screen">
           {children}
+          <div className="fixed bottom-1 text-center w-full text-sm text-gray-400">built by Mishael Kama</div>
         </div>
       </body>
     </html>
