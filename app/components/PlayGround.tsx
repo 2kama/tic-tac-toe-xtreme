@@ -25,7 +25,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
 
   const rowColumn = [0, 1, 2];
 
-  const checkWinPattern = (player: "x" | "o", game: string[]): Number[] => {
+  const checkWinPattern = (player: "x" | "o", game: string[]): number[] => {
     const winPatterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -169,7 +169,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   };
 
   return (
-    <table className="w-full flex flex-col">
+    <table key={gameId} className="w-full flex flex-col">
       <tbody className="w-full flex flex-col">
         {rowColumn.map((row: number, rowIndex: number) => (
           <tr key={`row-${rowIndex}`} className="flex large">

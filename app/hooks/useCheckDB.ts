@@ -1,7 +1,7 @@
 "use client";
 
 export const useCheckDB = () => {
-  const exist = (gameid: string) => {
+  const exist = () => {
     return (
       localStorage.TIC_TAC_TOE_X &&
       typeof JSON.parse(localStorage.TIC_TAC_TOE_X) === "object"
@@ -9,19 +9,19 @@ export const useCheckDB = () => {
   };
 
   const player = (gameid: string) => {
-    return exist(gameid)
+    return exist()
       ? JSON.parse(localStorage.TIC_TAC_TOE_X).hasOwnProperty(gameid)
       : false;
   };
 
   const XorO = (gameid: string) => {
-    return exist(gameid)
+    return exist()
       ? JSON.parse(localStorage.TIC_TAC_TOE_X)[gameid] || "x"
       : "o";
   };
 
   const setGame = (side: string, gameid: string) => {
-    let currentPath = exist(gameid) ? JSON.parse(localStorage.TIC_TAC_TOE_X) : {};
+    const currentPath = exist() ? JSON.parse(localStorage.TIC_TAC_TOE_X) : {};
 
     localStorage.TIC_TAC_TOE_X = JSON.stringify({
       ...currentPath,

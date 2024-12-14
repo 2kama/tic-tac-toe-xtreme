@@ -75,7 +75,7 @@ export class TicTacToeXtreme {
   }
 
   private _possibilityOfWin(game: string, play: "x" | "o"): boolean {
-    let gameString = game.split("");
+    const gameString = game.split("");
     for (let i = 0; i < 9; i++) {
       if (gameString[i] === "-") {
         gameString[i] = play;
@@ -88,11 +88,11 @@ export class TicTacToeXtreme {
     const { game, row, col, play } = data;
     let result = play === "x" ? "O to play" : "X to play";
     let end = false;
-    let currentToken = this._token;
+    const currentToken = this._token;
     const cellValue = currentToken[game].split("")[row * 3 + col];
     if (cellValue === "-") {
-      let gameString = currentToken[game].split("");
-      let wonGame = currentToken[9].split("");
+      const gameString = currentToken[game].split("");
+      const wonGame = currentToken[9].split("");
       gameString[row * 3 + col] = play;
       currentToken[game] = gameString.join("");
       currentToken[currentToken.length - 1] = play === "x" ? "o" : "x";

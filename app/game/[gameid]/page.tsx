@@ -18,19 +18,23 @@ export default function GamePage({ params: { gameid } }: Props) {
   const { exist, XorO, player } = useCheckDB();
   const [isPlayer, setIsPlayer] = useState(false);
   const [acceptChallenge, showAcceptChallenge] = useState(false);
-  const [history, setHistory] = useState(1);
+  //const [history, setHistory] = useState(1);
   const [titleText, setTitleText] = useState("Tic Tac Toe Xtreme");
 
   //UPDATE GAME
-  const updateGame = (updateData: any) => {
+  const updateGame = (updateData: Record<string, boolean | string | string[] | number[]>) => {
     return updateDoc(doc(db, "games", gameid), {
       ...updateData
     });
   };
 
+  const checkIfIsAPlayer = () => {
+    exist() && player(gameid) ? setIsPlayer(true) : setIsPlayer(false);
+  }
+
   //CHECK IF IS A PLAYER
   useEffect(() => {
-    exist(gameid) && player(gameid) ? setIsPlayer(true) : setIsPlayer(false);
+    checkIfIsAPlayer();
   }, []);
 
   //CHECK IF GAME DOESN'T HAVE COMPLETE OPPONENTS
@@ -57,10 +61,10 @@ export default function GamePage({ params: { gameid } }: Props) {
     return unsub;
   }, []);
 
-  let game = new TicTacToeXtreme(gameData?.fen[gameData?.fen.length - history]);
+  const game = new TicTacToeXtreme(gameData?.fen[gameData?.fen.length - 1]);
 
   const onPlay = (data: { game: number; row: number; col: number; play: "x" | "o" }) => {
-    let result = game.play(data);
+    const result = game.play(data);
     updateGame({
       fen: [...gameData?.fen, result.fen],
       end: result.end,
@@ -92,8 +96,8 @@ export default function GamePage({ params: { gameid } }: Props) {
               allowPlay={!gameData.end && game.turn === XorO(gameid) && gameData.x !== "" && gameData.o !== ""}
               onPlay={onPlay}
               gameId={gameid}
-              fen={gameData.fen[gameData.fen.length - history]}
-              highlightSquares={[gameData.moves[gameData.moves.length - history]]}
+              fen={gameData.fen[gameData.fen.length - 1]}
+              highlightSquares={[gameData.moves[gameData.moves.length - 1]]}
             />
           </div>
           <Outcome gameData={gameData} />

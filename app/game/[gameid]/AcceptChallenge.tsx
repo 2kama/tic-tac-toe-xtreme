@@ -2,7 +2,7 @@ import { useCheckDB } from "@/app/hooks/useCheckDB";
 import { useState } from "react";
 
 type Props = {
-  updateGame: (updateData: any) => Promise<void>;
+  updateGame: (updateData: Record<string, boolean | string | string[] | number[]>) => Promise<void>;
   playAs: "x" | "o";
   gameid: string;
 };
