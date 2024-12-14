@@ -75,7 +75,7 @@ export default function Home() {
     </>,
     <>
       <Image src={Play_05} alt="larger game win" width={300} />
-      <ColorXO text="Each player plays in the game box that corresponds to the position of the square of the opponent's just concluded play." />
+      <ColorXO text="Each player plays his/her turn in the game box that corresponds to the position of the square of the opponent's just concluded play." />
       <ColorXO text="i.e if player-X plays in square-2 of any game box, player-O's next play would be in game-box-2 ...and so on..." />
     </>,
     <>
