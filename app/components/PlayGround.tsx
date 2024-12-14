@@ -60,24 +60,15 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   const BoxWin = ({ value, row, col }: { value: string; row: number; col: number }) => {
     const gameDecision = token[token.length - 4];
     const winPatterns = gameDecision !== "-" ? checkWinPattern(gameDecision as "x" | "o", token[9].split("")) : [];
+    const bigWinClassName = "relative flex w-full text-9xl bg-[#fffffa] items-center justify-center -mt-[100%] hover:opacity-25"
 
     if (value === "x") {
       return (
-        <Image
-          src={gameDecision === "x" && winPatterns.includes(row * 3 + col) ? Big_X_Win : Big_X}
-          alt="X"
-          width={150}
-          className="-mt-[100%] hover:opacity-25"
-        />
+        <div className={`${bigWinClassName} ${gameDecision === "x" && winPatterns.includes(row * 3 + col) ? 'text-red-500' : ''}`}>x</div>
       );
     } else if (value === "o") {
       return (
-        <Image
-          src={gameDecision === "o" && winPatterns.includes(row * 3 + col) ? Big_O_Win : Big_O}
-          alt="O"
-          width={150}
-          className="-mt-[100%] hover:opacity-25"
-        />
+        <div className={`${bigWinClassName} ${gameDecision === "o" && winPatterns.includes(row * 3 + col) ? 'text-red-500' : ''}`}>o</div>
       );
     } else if (value === "d") {
       return <Image src={draw} alt="Draw" width={150} className="-mt-[100%] hover:opacity-25" />;
@@ -108,16 +99,14 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
     }) => {
       const cellClassName = `${
         highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col) ? "bg-yellow-100 " : ""
-      }p-[6%]`;
+      }w-1/3`;
+
+      const cellValueClassName = "w-full h-full flex items-center justify-center text-2xl lg:text-3xl"
 
       if (cellValue === "x") {
         return (
           <td className={cellClassName}>
-            <Image
-              src={gameDecision === "x" && winPatterns.includes(data.row * 3 + data.col) ? X_Win : X}
-              alt="X"
-              width={50}
-            />
+            <div className={`${cellValueClassName} ${gameDecision === "x" && winPatterns.includes(data.row * 3 + data.col) ? 'text-red-500' : ''}`}>x</div>
           </td>
         );
       }
@@ -125,11 +114,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
       if (cellValue === "o") {
         return (
           <td className={cellClassName}>
-            <Image
-              src={gameDecision === "o" && winPatterns.includes(data.row * 3 + data.col) ? O_Win : O}
-              alt="O"
-              width={50}
-            />
+            <div className={`${cellValueClassName} ${gameDecision === "o" && winPatterns.includes(data.row * 3 + data.col) ? 'text-red-500' : ''}`}>o</div>
           </td>
         );
       }
@@ -176,7 +161,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
             {rowColumn.map((column, colIndex) => (
               <td
                 key={`row-${rowIndex}--col-${colIndex}`}
-                className={`${isPlayable(rowIndex * 3 + colIndex) ? "bg-green-50 " : ""}p-[4%] md:p-[7%] large`}
+                className={`${isPlayable(rowIndex * 3 + colIndex) ? "bg-green-50 " : ""}w-1/3 p-[4%] md:p-[7%] large`}
               >
                 <DisplayGameBox tokenSpread={ThreeByThreeBox(token)[row][column]} game={rowIndex * 3 + colIndex} />
                 <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />

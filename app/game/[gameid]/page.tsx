@@ -91,7 +91,7 @@ export default function GamePage({ params: { gameid } }: Props) {
           {acceptChallenge && (
             <AcceptChallenge updateGame={updateGame} playAs={gameData.x === "" ? "x" : "o"} gameid={gameid} />
           )}
-          <div className="w-[95%] sm:w-[70%] md:w-[60%] lg:w-[50%]">
+          <div className="w-[95%] sm:w-[70%] md:w-[560px] lg:w-[670px]">
             <PlayGround
               allowPlay={!gameData.end && game.turn === XorO(gameid) && gameData.x !== "" && gameData.o !== ""}
               onPlay={onPlay}
