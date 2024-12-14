@@ -1,14 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import X from "../images/x.png";
-import O from "../images/o.png";
-import X_Win from "../images/x-win.png";
-import O_Win from "../images/o-win.png";
-import Big_O_Win from "../images/big/o-win.png";
-import Big_X_Win from "../images/big/x-win.png";
-import Big_O from "../images/big/o.png";
-import Big_X from "../images/big/x.png";
 import empty from "../images/empty.png";
 import draw from "../images/draw.png";
 
