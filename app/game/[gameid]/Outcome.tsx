@@ -22,7 +22,8 @@ const Outcome = ({ gameData }: Props) => {
         {gameDraw && "Draw"}
         {X_Won && `${gameData.x}(x) Won`}
         {O_Won && `${gameData.o}(o) Won`}
-        {gameInPlay && "-VS-"}
+        {gameInPlay && XtoPlay && `${gameData.x}(x)'s Turn`}
+        {gameInPlay && OtoPlay && `${gameData.o}(o)'s Turn`}
       </div>
       <div className={`${gameInPlay && XtoPlay && "opacity-20"} flex items-center`}>
         <div className="text-5xl md:text-7xl opacity-20 -mr-5 md:-mr-8">O</div>
