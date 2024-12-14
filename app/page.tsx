@@ -33,24 +33,28 @@ export default function Home() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [buttonDisable, setButtonDisable] = useState(false);
-  const [showModal, setShowModal] = useState('');
+  const [showModal, setShowModal] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [page, setPage] = useState(0);
 
   const { setGame } = useCheckDB();
 
   const ColorXO = ({ text }: { text: string }) => {
-    const check = ['x', 'o'];
-    const colored = text.split('').map((char, index) => {
+    const check = ["x", "o"];
+    const colored = text.split("").map((char, index) => {
       if (check.includes(char.toLowerCase())) {
-        return <span key={index} className="text-red-400">{char}</span>
+        return (
+          <span key={index} className="text-red-400">
+            {char}
+          </span>
+        );
       } else {
-        return <span key={index}>{char}</span>
+        return <span key={index}>{char}</span>;
       }
     });
 
-    return <div className="mt-4 text-center">{colored}</div>
-  }
+    return <div className="mt-4 text-center">{colored}</div>;
+  };
 
   const howToPlay: ReactNode[] = [
     <>
@@ -79,8 +83,8 @@ export default function Home() {
     </>,
     <>
       <div className="flex gap-6">
-      <Image src={Play_04} alt="larger game win" width={150} />
-      <Image src={Play_06} alt="larger game win" width={150} />
+        <Image src={Play_04} alt="larger game win" width={150} />
+        <Image src={Play_06} alt="larger game win" width={150} />
       </div>
       <ColorXO text="If a player is sent to a game-box that is unplayable, then that player can choose from any available playable game boxes" />
       <ColorXO text="Unplayable game-boxes are boxes that have either been won or have all squares filled." />
@@ -90,7 +94,7 @@ export default function Home() {
       <ColorXO text="Playable/valid-play game boxes would have a light-green background. This should help you get the hang of the game." />
       <ColorXO text="Enjoy!" />
     </>
-  ]
+  ];
 
   const createGame = async (side: "x" | "o") => {
     setButtonDisable(true);
@@ -145,42 +149,50 @@ export default function Home() {
 
   useEffect(() => {
     setPage(0);
-  }, [showModal])
-
+  }, [showModal]);
 
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
-      <header className="bg-white text-gray-500 text-center text-[2rem] lg:text-[5rem] p-4 mb-12">Tic Tac Toe Xtreme</header>
+      <header className="bg-white text-gray-500 text-center text-[2rem] lg:text-[5rem] p-4 mb-12">
+        Tic Tac Toe Xtreme
+      </header>
 
       <div className="flex gap-6 flex-col">
-        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}> [ Play A Game ] </button>
-        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.howToPlay)}> [ How To Play ] </button>
+        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
+          {" "}
+          [ Play A Game ]{" "}
+        </button>
+        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.howToPlay)}>
+          {" "}
+          [ How To Play ]{" "}
+        </button>
       </div>
 
       {showModal && (
-        <div onClick={() => openModal('')} className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>
+        <div
+          onClick={() => openModal("")}
+          className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"
+        ></div>
       )}
 
       {showModal === modals.howToPlay && (
         <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
           <h1 className="text-center text-xl mb-10 text-green-500">How To Play</h1>
-          <div className="flex flex-col items-center">
-            {howToPlay[page]}
-          </div>
+          <div className="flex flex-col items-center">{howToPlay[page]}</div>
           <div className="flex flex-row">
             <button
-              className={`${page === 0 ? 'text-gray-300' : ''} p-3 w-full`}
-              onClick={() => setPage(prev => prev - 1)}
+              className={`${page === 0 ? "text-gray-300" : ""} p-3 w-full`}
+              onClick={() => setPage((prev) => prev - 1)}
               disabled={page === 0}
             >
-              {'<< Prev'}
+              {"<< Prev"}
             </button>
             <button
-              className={`${page === howToPlay.length - 1 ? 'text-gray-300' : ''} p-3 w-full`}
-              onClick={() => setPage(prev => prev + 1)}
+              className={`${page === howToPlay.length - 1 ? "text-gray-300" : ""} p-3 w-full`}
+              onClick={() => setPage((prev) => prev + 1)}
               disabled={page === howToPlay.length - 1}
             >
-              {'Next >>'}
+              {"Next >>"}
             </button>
           </div>
         </div>

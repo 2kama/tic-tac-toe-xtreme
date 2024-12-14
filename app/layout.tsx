@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-
-
 export const metadata: Metadata = {
   title: "Tic Tac Toe Xtreme",
-  description: "Play a game with friends",
+  description: "Play a game with friends"
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
