@@ -31,9 +31,9 @@ export default function GamePage({ params: { gameid } }: Props) {
   //CHECK IF IS A PLAYER
   useEffect(() => {
     if (exist() && player(gameid)) {
-      setIsPlayer(true)
+      setIsPlayer(true);
     } else {
-      setIsPlayer(false)
+      setIsPlayer(false);
     }
   }, []);
 
@@ -78,12 +78,12 @@ export default function GamePage({ params: { gameid } }: Props) {
       {gameData && (
         <>
           <title>{titleText}</title>
-          <a href="/" className="absolute top-0 left-0 p-4 bg-red-500 text-white">
-            &lt; Home
-          </a>
-          <div className="absolute top-2 text-xl">
-            X-tic-tac-toe
-          </div>
+          <header className="bg-white w-full fixed top-0 text-gray-500 text-center text-sm lg:text-lg p-4">
+            <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
+              &lt; Home
+            </a>
+            Tic Tac Toe Xtreme
+          </header>
           {(gameData.x === "" || gameData.o === "" || acceptChallenge) && (
             <div className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>
           )}
