@@ -291,10 +291,13 @@ const VsComputer = () => {
   return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center">
       <title>Tic Tac Toe Xtreme | vs Computer</title>
-      <a href="/" className="absolute top-0 left-0 p-4 bg-red-500 text-white">
+      
+      <header className="bg-white w-full fixed top-0 text-gray-500 text-center text-sm lg:text-lg p-4">
+      <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
         &lt; Home
       </a>
-      <div className="absolute top-2 text-xl">X-tic-tac-toe</div>
+        Tic Tac Toe Xtreme
+      </header>
 
       {thinking && (
         <div className="flex gap-3 items-center opacity-80 bg-white fixed p-16">

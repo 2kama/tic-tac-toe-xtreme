@@ -53,7 +53,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   const BoxWin = ({ value, row, col }: { value: string; row: number; col: number }) => {
     const gameDecision = token[token.length - 4];
     const winPatterns = gameDecision !== "-" ? checkWinPattern(gameDecision as "x" | "o", token[9].split("")) : [];
-    const bigWinClassName = "relative flex w-full text-9xl bg-[#fffffa] items-center justify-center -mt-[100%] hover:opacity-25"
+    const bigWinClassName = "relative flex w-full h-full text-7xl sm:text-9xl bg-[#fffffa] items-center justify-center -mt-[100%] hover:opacity-25"
 
     if (value === "x") {
       return (
@@ -94,7 +94,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
         highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col) ? "bg-yellow-100 " : ""
       }w-1/3`;
 
-      const cellValueClassName = "w-full h-full flex items-center justify-center text-2xl lg:text-3xl"
+      const cellValueClassName = "w-full h-full flex items-center justify-center text-sm sm:text-2xl lg:text-3xl"
 
       if (cellValue === "x") {
         return (

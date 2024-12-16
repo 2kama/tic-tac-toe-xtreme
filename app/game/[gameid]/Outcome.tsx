@@ -24,10 +24,10 @@ const Outcome = ({ gameData, computer = false }: Props) => {
   return (
     <div className="flex w-[80%] md:w-[400px] mt-8 md:mt-12 items-center justify-between">
       <div className={`${gameInPlay && OtoPlay && "opacity-20"} flex items-center`}>
-        <div className="text-lg md:text-2xl">{gameData.x ? gameData.x : "Waiting..."}</div>
-        <div className="text-5xl md:text-7xl opacity-20 -ml-5 md:-ml-8">X</div>
+        <div className="text-sm md:text-2xl">{gameData.x ? gameData.x : "Waiting..."}</div>
+        <div className="text-4xl md:text-7xl opacity-20 -ml-5 md:-ml-8">X</div>
       </div>
-      <div className="text-red-600">
+      <div className="text-red-600 text-sm md:text-lg">
         {gameDraw && "Draw"}
         {X_Won && `${gameData.x}(x) Won`}
         {O_Won && `${gameData.o}(o) Won`}
@@ -37,8 +37,8 @@ const Outcome = ({ gameData, computer = false }: Props) => {
         {computer && gameInPlay && OtoPlay && outcomeWordings("o", gameData.o)}
       </div>
       <div className={`${gameInPlay && XtoPlay && "opacity-20"} flex items-center`}>
-        <div className="text-5xl md:text-7xl opacity-20 -mr-5 md:-mr-8">O</div>
-        <div className="text-lg md:text-2xl">{gameData.o ? gameData.o : "Waiting..."}</div>
+        <div className="text-4xl md:text-7xl opacity-20 -mr-5 md:-mr-8">O</div>
+        <div className="text-sm md:text-2xl">{gameData.o ? gameData.o : "Waiting..."}</div>
       </div>
     </div>
   );
