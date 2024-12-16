@@ -3,13 +3,14 @@
 import Image from "next/image";
 import empty from "../images/empty.png";
 import draw from "../images/draw.png";
+import { MovesType } from "../utils/TicTacToeXtreme";
 
 type PlayGroundProps = {
   gameId: string;
   fen: string;
   highlightSquares?: number[];
   allowPlay?: boolean;
-  onPlay: (data: { game: number; row: number; col: number; play: "x" | "o" }) => void;
+  onPlay: (data: MovesType) => void;
 };
 
 const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPlay }: PlayGroundProps) => {
@@ -87,7 +88,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
       data
     }: {
       cellValue: string;
-      data: { game: number; row: number; col: number; play: "x" | "o" };
+      data: MovesType;
     }) => {
       const cellClassName = `${
         highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col) ? "bg-yellow-100 " : ""

@@ -1,5 +1,7 @@
 "use client";
 
+import { computerLevels } from "../utils/constants";
+
 export const useCheckDB = () => {
   const exist = () => {
     return (
@@ -29,5 +31,18 @@ export const useCheckDB = () => {
     });
   };
 
-  return { exist, player, XorO, setGame };
+  const setLevel = (level: string) => {
+    const currentPath = exist() ? JSON.parse(localStorage.TIC_TAC_TOE_X) : {};
+
+    localStorage.TIC_TAC_TOE_X = JSON.stringify({
+      ...currentPath,
+      level,
+    });
+  };
+
+  const getLevel = () => {
+    return exist() ? JSON.parse(localStorage.TIC_TAC_TOE_X).level : computerLevels.easy;
+  }
+
+  return { exist, player, XorO, setGame, setLevel, getLevel };
 };

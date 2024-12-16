@@ -27,7 +27,7 @@ import Play_04 from "./images/howToPlay/play_04.png";
 import Play_05 from "./images/howToPlay/play_05.png";
 import Play_06 from "./images/howToPlay/play_06.png";
 import Play_07 from "./images/howToPlay/play_07.png";
-import { modals } from "./utils/helper-utils";
+import { computerLevels, modals } from "./utils/constants";
 
 export default function Home() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState("");
   const [page, setPage] = useState(0);
 
-  const { setGame } = useCheckDB();
+  const { setGame, setLevel } = useCheckDB();
 
   const ColorXO = ({ text }: { text: string }) => {
     const check = ["x", "o"];
@@ -75,7 +75,7 @@ export default function Home() {
     </>,
     <>
       <Image src={Play_05} alt="larger game win" width={300} />
-      <ColorXO text="Each player plays his/her turn in the game box that corresponds to the position of the square of the opponent's just concluded play." />
+      <ColorXO text="Each player plays their turn in the game box that matches the position of the square where the opponent just played." />
       <ColorXO text="i.e if player-X plays in square-2 of any game box, player-O's next play would be in game-box-2 ...and so on..." />
     </>,
     <>
@@ -86,7 +86,7 @@ export default function Home() {
         <Image src={Play_04} alt="larger game win" width={150} />
         <Image src={Play_06} alt="larger game win" width={150} />
       </div>
-      <ColorXO text="If a player is sent to a game-box that is unplayable, then that player can choose from any available playable game boxes" />
+      <ColorXO text="If a player is sent to a game-box that is unplayable, then they can choose from any available playable game boxes" />
       <ColorXO text="Unplayable game-boxes are boxes that have either been won or have all squares filled." />
     </>,
     <>
@@ -135,6 +135,11 @@ export default function Home() {
     }
   };
 
+  const vsComputer = (level: string) => {
+    setLevel(level);
+    router.push("/vscomputer");
+  };
+
   useEffect(() => {
     if (name) {
       setButtonDisable(false);
@@ -160,7 +165,11 @@ export default function Home() {
       <div className="flex gap-6 flex-col">
         <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
           {" "}
-          [ Play A Game ]{" "}
+          [ vs Player ]{" "}
+        </button>
+        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.vsComputer)}>
+          {" "}
+          [ vs Computer ]{" "}
         </button>
         <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.howToPlay)}>
           {" "}
@@ -193,6 +202,28 @@ export default function Home() {
               disabled={page === howToPlay.length - 1}
             >
               {"Next >>"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showModal === modals.vsComputer && (
+        <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
+          <h1 className="text-center text-xl mb-10 text-green-500">Play vs Computer</h1>
+          <div className="flex flex-col gap-6">
+            <button className={`p-3 w-full bg-green-500 text-white`} onClick={() => vsComputer(computerLevels.easy)}>
+              {computerLevels.easy}
+            </button>
+            <div className="w-full text-center text-red-500">Coming Soon</div>
+            <button
+              className={`p-3 w-full bg-gray-200`}
+              onClick={() => vsComputer(computerLevels.intermediate)}
+              disabled
+            >
+              {computerLevels.intermediate}
+            </button>
+            <button className={`p-3 w-full bg-gray-200`} onClick={() => vsComputer(computerLevels.hard)} disabled>
+              {computerLevels.hard}
             </button>
           </div>
         </div>

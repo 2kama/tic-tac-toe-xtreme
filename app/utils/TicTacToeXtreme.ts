@@ -4,6 +4,13 @@ export const DEFAULT_FEN =
 export const X = "x";
 export const O = "o";
 
+export type MovesType = {
+  game: number;
+  row: number;
+  col: number;
+  play: "x" | "o";
+};
+
 export class TicTacToeXtreme {
   private _fen: string;
   private _token: string[];
@@ -47,6 +54,10 @@ export class TicTacToeXtreme {
     return this._whoWon;
   }
 
+  get token(): string[] {
+    return this._token;
+  }
+
   private _checkIfWon(player: "x" | "o", game: string[]): boolean {
     // check rows
     for (let row = 0; row < 3; row++) {
@@ -84,7 +95,7 @@ export class TicTacToeXtreme {
     return this._checkIfWon(play, gameString);
   }
 
-  play(data: { game: number; row: number; col: number; play: "x" | "o" }): {fen: string; outCome: string; end: boolean} {
+  play(data: MovesType): { fen: string; outCome: string; end: boolean } {
     const { game, row, col, play } = data;
     let result = play === "x" ? "O to play" : "X to play";
     let end = false;
@@ -116,7 +127,7 @@ export class TicTacToeXtreme {
           result = `Game Over: Draw!`;
           end = true;
         }
-      }else if (this._checkIfDraw(currentToken[game].split(""))) {
+      } else if (this._checkIfDraw(currentToken[game].split(""))) {
         wonGame[game] = "d";
         currentToken[9] = wonGame.join("");
         if (
@@ -132,6 +143,6 @@ export class TicTacToeXtreme {
       currentToken[currentToken.length - 2] = wonGame[row * 3 + col] === "-" ? (row * 3 + col).toString() : "-";
       this._fen = currentToken.join("|");
     }
-    return {fen: this._fen, outCome: result, end};
+    return { fen: this._fen, outCome: result, end };
   }
 }
