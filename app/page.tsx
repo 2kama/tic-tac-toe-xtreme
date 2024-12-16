@@ -214,15 +214,13 @@ export default function Home() {
             <button className={`p-3 w-full bg-green-500 text-white`} onClick={() => vsComputer(computerLevels.easy)}>
               {computerLevels.easy}
             </button>
-            <div className="w-full text-center text-red-500">Coming Soon</div>
             <button
-              className={`p-3 w-full bg-gray-200`}
+              className={`p-3 w-full bg-blue-500 text-white`}
               onClick={() => vsComputer(computerLevels.intermediate)}
-              disabled
             >
               {computerLevels.intermediate}
             </button>
-            <button className={`p-3 w-full bg-gray-200`} onClick={() => vsComputer(computerLevels.hard)} disabled>
+            <button className={`p-3 w-full bg-red-500 text-white`} onClick={() => vsComputer(computerLevels.hard)}>
               {computerLevels.hard}
             </button>
           </div>

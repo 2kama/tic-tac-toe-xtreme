@@ -38,6 +38,7 @@ const VsComputer = () => {
   const [level] = useState(getLevel());
   const [timeOut, addTimeOut] = useState<boolean>(false);
   const [thinking, setThinking] = useState<boolean>(false);
+  const [whomToPlay, setWhomToPlay] = useState<"x" | "o">("x");
 
   useEffect(() => {
     const time = setTimeout(() => {
@@ -50,17 +51,20 @@ const VsComputer = () => {
   const game = new TicTacToeXtreme(gameData?.fen[gameData?.fen.length - 1]);
 
   const onPlay = (data: MovesType) => {
-    if (data === undefined) {
-      console.log("data", data);
-    } else {
-      const result = game.play(data);
-      setGameData((prev) => ({
-        ...prev,
-        fen: [...gameData?.fen, result.fen],
-        end: result.end,
-        outCome: result.outCome,
-        moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
-      }));
+    if (whomToPlay === data.play) {
+      setWhomToPlay(() => (data.play === "x" ? "o" : "x"));
+      if (data === undefined) {
+        console.log("data", data);
+      } else {
+        const result = game.play(data);
+        setGameData((prev) => ({
+          ...prev,
+          fen: [...gameData?.fen, result.fen],
+          end: result.end,
+          outCome: result.outCome,
+          moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
+        }));
+      }
     }
   };
 
@@ -273,13 +277,13 @@ const VsComputer = () => {
   };
 
   useEffect(() => {
-    if (game.turn !== randomPick && !gameData?.end && timeOut) {
+    if (game.turn === computerPick && !gameData?.end && timeOut) {
       setThinking(true);
       setTimeout(
         () => {
           computerMove();
         },
-        level === computerLevels.easy ? 2000 : level === computerLevels.intermediate ? 3000 : 4000
+        level === computerLevels.easy ? 2000 : level === computerLevels.intermediate ? 3000 : 5000
       );
     }
   }, [gameData, timeOut]);
@@ -314,14 +318,14 @@ const VsComputer = () => {
           <div className="w-full text-center mb-5 text-red-500">{level} Mode</div>
           <div className="w-[95%] sm:w-[70%] md:w-[560px] lg:w-[670px]">
             <PlayGround
-              allowPlay={!gameData.end && game.turn === randomPick}
+              allowPlay={!game.isGameOver && game.turn === randomPick}
               onPlay={onPlay}
               gameId={"vscomputer"}
-              fen={gameData.fen[gameData.fen.length - 1]}
+              fen={game.fen}
               highlightSquares={[gameData.moves[gameData.moves.length - 1]]}
             />
           </div>
-          <Outcome computer={true} gameData={gameData} />
+          <Outcome computer={true} gameData={{ ...gameData, outCome: game.outCome }} />
         </>
       )}
     </div>
