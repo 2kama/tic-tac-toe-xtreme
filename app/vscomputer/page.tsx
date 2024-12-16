@@ -9,12 +9,16 @@ import { MovesType } from "../utils/TicTacToeXtreme";
 import {
   cancelOpponentWinBoxScore,
   computerLevels,
+  drawTheGameScore,
   normalPlayScore,
   opponentCancelWinBoxScore,
   opponentNormalPlayScore,
   opponentWillDrawTheGameScore,
+  opponentWillHaveBoxChoiceScore,
+  opponentWillWinTheGameScore,
   opponentWinBoxScore,
-  winBoxScore
+  winBoxScore,
+  winTheGameScore
 } from "../utils/constants";
 import { useCheckDB } from "../hooks/useCheckDB";
 
@@ -156,6 +160,12 @@ const VsComputer = () => {
 
     let worstMoveScore = 0;
 
+    const updateWorstMoveScore = (score: number) => {
+      if (worstMoveScore > score) {
+        worstMoveScore = score;
+      }
+    };
+
     for (const possibleMove of possibleMoves) {
       const proposedImpartonOpponent = getResultOfProposedMove(possibleMove, possibleFen);
 
@@ -163,38 +173,34 @@ const VsComputer = () => {
 
       if (proposedImpartonOpponent.end) {
         if (proposedImpartonOpponentGame.whoWon !== "d") {
-          worstMoveScore = -10;
-          break;
+          //win the game
+          updateWorstMoveScore(opponentWillWinTheGameScore);
         } else {
           // A draw case
-          worstMoveScore = opponentWillDrawTheGameScore;
+          updateWorstMoveScore(opponentWillDrawTheGameScore);
         }
-        continue;
-      }
+      } else {
+        const gameState = proposedImpartonOpponentGame.token[9].split("");
+        const targetGame = possibleMove.game;
+        const targetCell = possibleMove.row * 3 + possibleMove.col;
+        const possibleToken = possibleFen.split("|");
 
-      const gameState = proposedImpartonOpponentGame.token[9].split("");
-      const targetGame = possibleMove.game;
-      const targetCell = possibleMove.row * 3 + possibleMove.col;
-      const possibleToken = possibleFen.split("|");
-
-      // check if opponent will win the box
-      if (gameState[targetGame] === randomPick) {
-        worstMoveScore = opponentWinBoxScore;
-        break;
-      }
-      // check if opponent will have a chance to choose any box
-      else if (possibleToken[possibleToken.length - 2] === "-") {
-        worstMoveScore = -2;
-        break;
-      }
-      // check if opponent will block computer win
-      else if (checkIfComputerCancelsOpponentWin(proposedImpartonOpponent.fen.split("|")[targetGame], targetCell)) {
-        worstMoveScore = opponentCancelWinBoxScore;
-        break;
-      }
-      // just a normal move
-      else {
-        worstMoveScore = opponentNormalPlayScore;
+        // check if opponent will win the box
+        if (gameState[targetGame] === randomPick) {
+          updateWorstMoveScore(opponentWinBoxScore);
+        }
+        // check if opponent will have a chance to choose any box
+        else if (possibleToken[possibleToken.length - 2] === "-") {
+          updateWorstMoveScore(opponentWillHaveBoxChoiceScore);
+        }
+        // check if opponent will block computer win
+        else if (checkIfComputerCancelsOpponentWin(proposedImpartonOpponent.fen.split("|")[targetGame], targetCell)) {
+          updateWorstMoveScore(opponentCancelWinBoxScore);
+        }
+        // just a normal move
+        else {
+          updateWorstMoveScore(opponentNormalPlayScore);
+        }
       }
     }
 
@@ -240,37 +246,35 @@ const VsComputer = () => {
 
         if (proposedImpartonComputer.end) {
           if (proposedImpartonComputerGame.whoWon !== "d") {
-            onPlay(possibleMove); // Computer wins
-            break;
+            //win the game
+            updateBestMove(possibleMove, winTheGameScore, 0);
           } else {
             // A draw case
-            bestMoveScore = 5;
-            bestPossibleMoves = [possibleMove];
+            updateBestMove(possibleMove, drawTheGameScore, 0);
           }
-          continue;
-        }
+        } else {
+          const gameState = proposedImpartonComputerGame.token[9].split("");
+          const targetGame = possibleMove.game;
+          const targetCell = possibleMove.row * 3 + possibleMove.col;
 
-        const gameState = proposedImpartonComputerGame.token[9].split("");
-        const targetGame = possibleMove.game;
-        const targetCell = possibleMove.row * 3 + possibleMove.col;
+          const consequenceScore =
+            level === computerLevels.hard ? checkPossibleResultOfOpponentNextMove(proposedImpartonComputer.fen) : 0;
 
-        const consequenceScore =
-          level === computerLevels.hard ? checkPossibleResultOfOpponentNextMove(proposedImpartonComputer.fen) : 0;
-
-        // check if computer will win the box
-        if (gameState[targetGame] === computerPick) {
-          updateBestMove(possibleMove, winBoxScore, consequenceScore);
-        }
-        // check if computer will block opponent win
-        else if (checkIfComputerCancelsOpponentWin(proposedImpartonComputer.fen.split("|")[targetGame], targetCell)) {
-          updateBestMove(possibleMove, cancelOpponentWinBoxScore, consequenceScore);
-        }
-        // just a normal move
-        else {
-          updateBestMove(possibleMove, normalPlayScore, consequenceScore);
+          // check if computer will win the box
+          if (gameState[targetGame] === computerPick) {
+            updateBestMove(possibleMove, winBoxScore, consequenceScore);
+          }
+          // check if computer will block opponent win
+          else if (checkIfComputerCancelsOpponentWin(proposedImpartonComputer.fen.split("|")[targetGame], targetCell)) {
+            updateBestMove(possibleMove, cancelOpponentWinBoxScore, consequenceScore);
+          }
+          // just a normal move
+          else {
+            updateBestMove(possibleMove, normalPlayScore, consequenceScore);
+          }
         }
       }
-
+      console.log('bestPossible Moves', bestPossibleMoves)
       onPlay(bestPossibleMoves[Math.floor(Math.random() * bestPossibleMoves.length)]);
       setThinking(false);
     }
@@ -291,11 +295,11 @@ const VsComputer = () => {
   return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center">
       <title>Tic Tac Toe Xtreme | vs Computer</title>
-      
+
       <header className="bg-white w-full fixed top-0 text-gray-500 text-center text-sm lg:text-lg p-4">
-      <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
-        &lt; Home
-      </a>
+        <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
+          &lt; Home
+        </a>
         Tic Tac Toe Xtreme
       </header>
 
