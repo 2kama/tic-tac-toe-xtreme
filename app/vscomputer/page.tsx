@@ -274,7 +274,7 @@ const VsComputer = () => {
           }
         }
       }
-      console.log('bestPossible Moves', bestPossibleMoves)
+      
       onPlay(bestPossibleMoves[Math.floor(Math.random() * bestPossibleMoves.length)]);
       setThinking(false);
     }

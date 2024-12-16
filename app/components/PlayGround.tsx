@@ -3,7 +3,9 @@
 import Image from "next/image";
 import empty from "../images/empty.png";
 import draw from "../images/draw.png";
-import { MovesType } from "../utils/TicTacToeXtreme";
+import { MovesType, TicTacToeXtreme } from "../utils/TicTacToeXtreme";
+import useSound from "use-sound";
+import { useEffect } from "react";
 
 type PlayGroundProps = {
   gameId: string;
@@ -17,6 +19,25 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   const token = fen.split("|");
 
   const rowColumn = [0, 1, 2];
+
+  const soundGame = new TicTacToeXtreme(fen);
+
+  //PlayGround sounds
+  const [playXMove] = useSound("/sounds/x-sound.mp3");
+  const [playOMove] = useSound("/sounds/o-sound.mp3");
+  const [playOverSound] = useSound("/sounds/over-sound.wav", { volume: 0.05 });
+
+  useEffect(() => {
+    if (soundGame.isGameOver) {
+      playOverSound();
+    } else {
+      if (soundGame.turn === "x" && soundGame.turns > 0) {
+        playOMove();
+      } else if (soundGame.turn === "o") {
+        playXMove();
+      }
+    }
+  }, [fen]);
 
   const checkWinPattern = (player: "x" | "o", game: string[]): number[] => {
     const winPatterns = [
