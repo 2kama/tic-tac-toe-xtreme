@@ -138,7 +138,7 @@ const VsComputer = () => {
 
   const checkPossibleResultOfOpponentNextMove = (possibleFen: string) => {
     const proposedOpponentGame = new TicTacToeXtreme(possibleFen);
-    let possibleMoves: MovesType[] = [];
+    const possibleMoves: MovesType[] = [];
     for (let i = 0; i < 9; i++) {
       if (isPlayable(i, proposedOpponentGame.token)) {
         const cellValue = proposedOpponentGame.token[i].split("");
@@ -198,7 +198,7 @@ const VsComputer = () => {
   };
 
   const computerMove = () => {
-    let possibleMoves: MovesType[] = [];
+    const possibleMoves: MovesType[] = [];
     for (let i = 0; i < 9; i++) {
       if (isPlayable(i, token)) {
         const cellValue = token[i].split("");
