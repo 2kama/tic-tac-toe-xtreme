@@ -4,6 +4,7 @@ import { computerLevels } from "../utils/constants";
 
 export const useCheckDB = () => {
   const exist = () => {
+    if (typeof window === "undefined") return false;
     return (
       localStorage.TIC_TAC_TOE_X &&
       typeof JSON.parse(localStorage.TIC_TAC_TOE_X) === "object"
