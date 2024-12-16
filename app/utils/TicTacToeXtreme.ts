@@ -30,6 +30,20 @@ export class TicTacToeXtreme {
     this._whoWon = this._token[this._token.length - 4];
   }
 
+  get outCome(): string {
+    if (this._gameOver) {
+      if (this._whoWon === "x") {
+        return "Game Over: X Won!";
+      } else if (this._whoWon === "o") {
+        return "Game Over: O Won!";
+      } else {
+        return "Game Over: Draw!";
+      }
+    } else {
+      return `${this._turn === "x" ? "X" : "O"} to play`;
+    }
+  }
+
   get fen(): string {
     return this._fen;
   }
@@ -120,8 +134,8 @@ export class TicTacToeXtreme {
           end = true;
         } else if (
           this._checkIfDraw(currentToken[9].split("")) ||
-          !this._possibilityOfWin(currentToken[9], "x") ||
-          !this._possibilityOfWin(currentToken[9], "o")
+          (!this._possibilityOfWin(currentToken[9], "x") &&
+          !this._possibilityOfWin(currentToken[9], "o"))
         ) {
           currentToken[currentToken.length - 4] = "d";
           result = `Game Over: Draw!`;
@@ -132,8 +146,8 @@ export class TicTacToeXtreme {
         currentToken[9] = wonGame.join("");
         if (
           this._checkIfDraw(currentToken[9].split("")) ||
-          !this._possibilityOfWin(currentToken[9], "x") ||
-          !this._possibilityOfWin(currentToken[9], "o")
+          (!this._possibilityOfWin(currentToken[9], "x") &&
+          !this._possibilityOfWin(currentToken[9], "o"))
         ) {
           currentToken[currentToken.length - 4] = "d";
           result = `Game Over: Draw!`;
