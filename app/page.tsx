@@ -36,6 +36,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [page, setPage] = useState(0);
+  const [gamesCount, setGamesCount] = useState(0);
 
   const { setGame, setLevel } = useCheckDB();
 
@@ -140,6 +141,19 @@ export default function Home() {
     router.push("/vscomputer");
   };
 
+  const countGames = async () => {
+    const q = query(collection(db, "games"), and(where("end", "==", true)));
+    const request = await getDocs(q);
+    return request.docs.length;
+  };
+
+  useEffect(() => {
+    const fetchGamesCount = async () => {
+      setGamesCount(await countGames());
+    };
+    fetchGamesCount();
+  }, []);
+
   useEffect(() => {
     if (name) {
       setButtonDisable(false);
@@ -161,7 +175,7 @@ export default function Home() {
       <header className="bg-white text-gray-500 text-center text-[2rem] lg:text-[5rem] p-4 mb-12">
         Tic Tac Toe Xtreme
       </header>
-
+      <div className="flex text-xl mb-6 text-red-500">{gamesCount} games played</div>
       <div className="flex gap-6 flex-col">
         <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
           {" "}
