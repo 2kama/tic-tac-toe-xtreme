@@ -142,7 +142,7 @@ export default function Home() {
   };
 
   const countGames = async () => {
-    const q = query(collection(db, "games"), and(where("end", "==", true)));
+    const q = query(collection(db, "games"));
     const request = await getDocs(q);
     return request.docs.length;
   };
