@@ -57,18 +57,15 @@ const VsComputer = () => {
   const onPlay = (data: MovesType) => {
     if (whomToPlay === data.play) {
       setWhomToPlay(() => (data.play === "x" ? "o" : "x"));
-      if (data === undefined) {
-        console.log("data", data);
-      } else {
-        const result = game.play(data);
-        setGameData((prev) => ({
-          ...prev,
-          fen: [...gameData?.fen, result.fen],
-          end: result.end,
-          outCome: result.outCome,
-          moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
-        }));
-      }
+
+      const result = game.play(data);
+      setGameData((prev) => ({
+        ...prev,
+        fen: [...gameData?.fen, result.fen],
+        end: result.end,
+        outCome: result.outCome,
+        moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
+      }));
     }
   };
 
@@ -274,8 +271,15 @@ const VsComputer = () => {
           }
         }
       }
-      
-      onPlay(bestPossibleMoves[Math.floor(Math.random() * bestPossibleMoves.length)]);
+
+      // ensure computer plays a move
+      const selectedBestPossibleMove = bestPossibleMoves[Math.floor(Math.random() * bestPossibleMoves.length)];
+
+      if (selectedBestPossibleMove === undefined) {
+        onPlay(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
+      } else {
+        onPlay(selectedBestPossibleMove);
+      }
       setThinking(false);
     }
   };
