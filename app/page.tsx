@@ -175,7 +175,7 @@ export default function Home() {
       <header className="bg-white text-gray-500 text-center text-[2rem] lg:text-[5rem] p-4 mb-12">
         Tic Tac Toe Xtreme
       </header>
-      <div className="flex text-xl mb-6 text-red-500">{gamesCount} games played</div>
+      <div className="flex text-xl mb-6 text-red-500">{gamesCount} games played...</div>
       <div className="flex gap-6 flex-col">
         <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
           {" "}
