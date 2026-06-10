@@ -3,6 +3,8 @@
 import Image from "next/image";
 import empty from "../images/empty.png";
 import draw from "../images/draw.png";
+import drawDark from "../images/draw-dark.png";
+import { useDarkMode } from "../hooks/useDarkMode";
 import { MovesType, TicTacToeXtreme } from "../utils/TicTacToeXtreme";
 import useSound from "use-sound";
 import { useEffect } from "react";
@@ -16,6 +18,7 @@ type PlayGroundProps = {
 };
 
 const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPlay }: PlayGroundProps) => {
+  const { isDark } = useDarkMode();
   const token = fen.split("|");
 
   const rowColumn = [0, 1, 2];
@@ -74,18 +77,32 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   const BoxWin = ({ value, row, col }: { value: string; row: number; col: number }) => {
     const gameDecision = token[token.length - 4];
     const winPatterns = gameDecision !== "-" ? checkWinPattern(gameDecision as "x" | "o", token[9].split("")) : [];
-    const bigWinClassName = "relative flex w-full h-full text-7xl sm:text-9xl bg-[#fffffa] items-center justify-center -mt-[100%] hover:opacity-25"
+    const bigWinClassName =
+      "theme-surface absolute inset-0 z-10 flex items-center justify-center text-[min(18vw,9rem)] leading-none hover:opacity-25";
+
+    const isRedX = gameDecision === "x" && winPatterns.includes(row * 3 + col);
+    const isRedO = gameDecision === "o" && winPatterns.includes(row * 3 + col);
 
     if (value === "x") {
       return (
-        <div className={`${bigWinClassName} ${gameDecision === "x" && winPatterns.includes(row * 3 + col) ? 'text-red-500' : ''}`}>x</div>
+        <div className={`${bigWinClassName} ${isRedX ? "text-red-500" : "theme-piece"}`}>x</div>
       );
     } else if (value === "o") {
       return (
-        <div className={`${bigWinClassName} ${gameDecision === "o" && winPatterns.includes(row * 3 + col) ? 'text-red-500' : ''}`}>o</div>
+        <div className={`${bigWinClassName} ${isRedO ? "text-red-500" : "theme-piece"}`}>o</div>
       );
     } else if (value === "d") {
-      return <Image src={draw} alt="Draw" width={150} className="-mt-[100%] hover:opacity-25" />;
+      return (
+        <div className={`${bigWinClassName}`}>
+          <Image
+            src={isDark ? drawDark : draw}
+            alt="Draw"
+            width={150}
+            height={150}
+            className="h-[70%] w-[70%] object-contain"
+          />
+        </div>
+      );
     } else {
       return null;
     }
@@ -99,7 +116,15 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
     );
   };
 
-  const DisplayGameBox = ({ tokenSpread, game }: { tokenSpread: string; game: number }) => {
+  const DisplayGameBox = ({
+    tokenSpread,
+    game,
+    isPlayableBox
+  }: {
+    tokenSpread: string;
+    game: number;
+    isPlayableBox: boolean;
+  }) => {
     const cellValue = tokenSpread.split("");
     const gameDecision = token[9].split("")[game];
     const winPatterns = gameDecision !== "-" ? checkWinPattern(gameDecision as "x" | "o", cellValue) : [];
@@ -111,16 +136,25 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
       cellValue: string;
       data: MovesType;
     }) => {
-      const cellClassName = `${
-        highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col) ? "bg-yellow-100 " : ""
-      }w-1/3`;
+      const isHighlighted = highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col);
+      const cellClassName = `${isHighlighted ? "bg-yellow-100 " : ""}relative h-full w-1/3`;
 
-      const cellValueClassName = "w-full h-full flex items-center justify-center text-sm sm:text-2xl lg:text-3xl"
+      const cellValueClassName =
+        "flex h-full w-full items-center justify-center text-[min(4vw,1.75rem)] leading-none sm:text-2xl lg:text-3xl";
+
+      const isRedX = gameDecision === "x" && winPatterns.includes(data.row * 3 + data.col);
+      const isRedO = gameDecision === "o" && winPatterns.includes(data.row * 3 + data.col);
+
+      const pieceColorClass = (isRed: boolean) => {
+        if (isRed) return "text-red-500";
+        if (isHighlighted || isPlayableBox) return "text-[#000000]";
+        return "theme-piece";
+      };
 
       if (cellValue === "x") {
         return (
           <td className={cellClassName}>
-            <div className={`${cellValueClassName} ${gameDecision === "x" && winPatterns.includes(data.row * 3 + data.col) ? 'text-red-500' : ''}`}>x</div>
+            <div className={`${cellValueClassName} ${pieceColorClass(isRedX)}`}>x</div>
           </td>
         );
       }
@@ -128,7 +162,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
       if (cellValue === "o") {
         return (
           <td className={cellClassName}>
-            <div className={`${cellValueClassName} ${gameDecision === "o" && winPatterns.includes(data.row * 3 + data.col) ? 'text-red-500' : ''}`}>o</div>
+            <div className={`${cellValueClassName} ${pieceColorClass(isRedO)}`}>o</div>
           </td>
         );
       }
@@ -138,16 +172,18 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
           className={`${cellClassName} ${isPlayable(game) ? "cursor-pointer hover:bg-yellow-100" : ""}`}
           onClick={isPlayable(game) ? () => onPlay(data) : () => null}
         >
-          <Image src={empty} alt="Empty" width={50} />
+          <div className="flex h-full w-full items-center justify-center">
+            <Image src={empty} alt="Empty" width={50} height={50} className="h-[65%] w-[65%] object-contain" />
+          </div>
         </td>
       );
     };
 
     return (
-      <table className="w-full flex flex-col">
-        <tbody className="w-full flex flex-col">
+      <table className="flex h-full w-full flex-col">
+        <tbody className="flex h-full w-full flex-col">
           {rowColumn.map((row, rowIndex) => (
-            <tr key={`row-${rowIndex}`} className="flex">
+            <tr key={`row-${rowIndex}`} className="flex min-h-0 flex-1">
               {rowColumn.map((column, colIndex) => (
                 <ShowCellValue
                   key={`row${rowIndex}-col${colIndex}`}
@@ -168,23 +204,35 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
   };
 
   return (
-    <table key={gameId} className="w-full flex flex-col">
-      <tbody className="w-full flex flex-col">
-        {rowColumn.map((row: number, rowIndex: number) => (
-          <tr key={`row-${rowIndex}`} className="flex large">
-            {rowColumn.map((column, colIndex) => (
-              <td
-                key={`row-${rowIndex}--col-${colIndex}`}
-                className={`${isPlayable(rowIndex * 3 + colIndex) ? "bg-green-50 " : ""}w-1/3 p-[4%] md:p-[7%] large`}
-              >
-                <DisplayGameBox tokenSpread={ThreeByThreeBox(token)[row][column]} game={rowIndex * 3 + colIndex} />
-                <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div key={gameId} className="aspect-square w-full">
+      <table className="flex h-full w-full flex-col">
+        <tbody className="flex h-full w-full flex-col">
+          {rowColumn.map((row: number, rowIndex: number) => (
+            <tr key={`row-${rowIndex}`} className="large flex min-h-0 flex-1">
+              {rowColumn.map((column, colIndex) => {
+                const playable = isPlayable(rowIndex * 3 + colIndex);
+
+                return (
+                <td
+                  key={`row-${rowIndex}--col-${colIndex}`}
+                  className={`large relative h-full w-1/3 p-[4%] md:p-[7%] ${playable ? "playable-box bg-green-50 " : ""}`}
+                >
+                  <div className="relative h-full w-full">
+                    <DisplayGameBox
+                      tokenSpread={ThreeByThreeBox(token)[row][column]}
+                      game={rowIndex * 3 + colIndex}
+                      isPlayableBox={playable}
+                    />
+                    <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />
+                  </div>
+                </td>
+              );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

@@ -78,14 +78,14 @@ export default function GamePage({ params: { gameid } }: Props) {
       {gameData && (
         <>
           <title>{titleText}</title>
-          <header className="bg-white w-full fixed top-0 text-gray-500 text-center text-sm lg:text-lg p-4">
+          <header className="theme-surface theme-piece fixed top-0 w-full p-4 text-center text-sm lg:text-lg">
             <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
               &lt; Home
             </a>
             Tic Tac Toe Xtreme
           </header>
           {(gameData.x === "" || gameData.o === "" || acceptChallenge) && (
-            <div className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"></div>
+            <div className="fixed z-40 flex h-full w-full cursor-pointer bg-black opacity-50"></div>
           )}
           {isPlayer && (gameData.x === "" || gameData.o === "") && <WaitingOnPlayer />}
           {acceptChallenge && (

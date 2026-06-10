@@ -12,11 +12,13 @@ const WaitingOnPlayer = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen absolute items-center justify-center">
-      <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
-        <h1 className="text-center text-green-500 text-xl mb-10">Waiting on player...</h1>
-        <p className="text-center mb-4">Share link to invite an opponent</p>
-        <button onClick={copyLink} className="bg-green-500 text-white p-3 w-full">{buttonText}</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="theme-surface box-border flex w-[90%] flex-col p-5 sm:w-[400px]">
+        <h1 className="mb-10 text-center text-xl text-green-500">Waiting on player...</h1>
+        <p className="theme-piece mb-4 text-center">Share link to invite an opponent</p>
+        <button onClick={copyLink} className="w-full bg-green-500 p-3 text-white">
+          {buttonText}
+        </button>
       </div>
     </div>
   );

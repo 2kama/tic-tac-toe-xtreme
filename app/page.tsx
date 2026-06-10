@@ -50,11 +50,15 @@ export default function Home() {
           </span>
         );
       } else {
-        return <span key={index}>{char}</span>;
+        return (
+          <span key={index} className="theme-piece">
+            {char}
+          </span>
+        );
       }
     });
 
-    return <div className="mt-4 text-center">{colored}</div>;
+    return <div className="theme-piece mt-4 text-center">{colored}</div>;
   };
 
   const howToPlay: ReactNode[] = [
@@ -172,20 +176,20 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
-      <header className="bg-white text-gray-500 text-center text-[2rem] lg:text-[5rem] p-4 mb-12">
+      <header className="theme-surface theme-piece mb-12 p-4 text-center text-[2rem] lg:text-[5rem]">
         Tic Tac Toe Xtreme
       </header>
       <div className="flex text-xl mb-6 text-red-500">{gamesCount} games played...</div>
       <div className="flex gap-6 flex-col">
-        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
+        <button className="theme-piece text-2xl hover:text-3xl" onClick={() => openModal(modals.playGame)}>
           {" "}
           [ vs Player ]{" "}
         </button>
-        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.vsComputer)}>
+        <button className="theme-piece text-2xl hover:text-3xl" onClick={() => openModal(modals.vsComputer)}>
           {" "}
           [ vs Computer ]{" "}
         </button>
-        <button className="text-2xl hover:text-3xl" onClick={() => openModal(modals.howToPlay)}>
+        <button className="theme-piece text-2xl hover:text-3xl" onClick={() => openModal(modals.howToPlay)}>
           {" "}
           [ How To Play ]{" "}
         </button>
@@ -194,24 +198,24 @@ export default function Home() {
       {showModal && (
         <div
           onClick={() => openModal("")}
-          className="cursor-pointer flex bg-black w-full h-full fixed opacity-50"
+          className="fixed z-40 flex h-full w-full cursor-pointer bg-black opacity-50"
         ></div>
       )}
 
       {showModal === modals.howToPlay && (
-        <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
+        <div className="theme-surface fixed left-1/2 top-1/2 z-50 box-border flex w-[90%] -translate-x-1/2 -translate-y-1/2 flex-col p-5 sm:w-[400px]">
           <h1 className="text-center text-xl mb-10 text-green-500">How To Play</h1>
           <div className="flex flex-col items-center">{howToPlay[page]}</div>
           <div className="flex flex-row">
             <button
-              className={`${page === 0 ? "text-gray-300" : ""} p-3 w-full`}
+              className={`theme-piece w-full p-3 ${page === 0 ? "theme-nav-disabled" : ""}`}
               onClick={() => setPage((prev) => prev - 1)}
               disabled={page === 0}
             >
               {"<< Prev"}
             </button>
             <button
-              className={`${page === howToPlay.length - 1 ? "text-gray-300" : ""} p-3 w-full`}
+              className={`theme-piece w-full p-3 ${page === howToPlay.length - 1 ? "theme-nav-disabled" : ""}`}
               onClick={() => setPage((prev) => prev + 1)}
               disabled={page === howToPlay.length - 1}
             >
@@ -222,7 +226,7 @@ export default function Home() {
       )}
 
       {showModal === modals.vsComputer && (
-        <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
+        <div className="theme-surface fixed left-1/2 top-1/2 z-50 box-border flex w-[90%] -translate-x-1/2 -translate-y-1/2 flex-col p-5 sm:w-[400px]">
           <h1 className="text-center text-xl mb-10 text-green-500">Play vs Computer</h1>
           <div className="flex flex-col gap-6">
             <button className={`p-3 w-full bg-green-500 text-white`} onClick={() => vsComputer(computerLevels.easy)}>
@@ -242,10 +246,10 @@ export default function Home() {
       )}
 
       {showModal === modals.playGame && (
-        <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
-          <h1 className="text-center text-xl mb-10 text-green-500">Play A Game</h1>
+        <div className="theme-surface fixed left-1/2 top-1/2 z-50 box-border flex w-[90%] -translate-x-1/2 -translate-y-1/2 flex-col p-5 sm:w-[400px]">
+          <h1 className="mb-10 text-center text-xl text-green-500">Play A Game</h1>
           <input
-            className="w-full bg-gray-200 p-3 text-gray-500 mb-5"
+            className="theme-input mb-5 w-full p-3"
             placeholder="Player Name..."
             type="text"
             value={name}
@@ -253,14 +257,14 @@ export default function Home() {
           />
           <div className="flex flex-row mb-14">
             <button
-              className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-green-500 text-white"} p-3 w-full`}
+              className={`${buttonDisable ? "theme-disabled" : "bg-green-500 text-white"} w-full p-3`}
               disabled={buttonDisable}
               onClick={() => createGame("x")}
             >
               Play as X
             </button>
             <button
-              className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-blue-500 text-white"} p-3 w-full`}
+              className={`${buttonDisable ? "theme-disabled" : "bg-blue-500 text-white"} w-full p-3`}
               disabled={buttonDisable}
               onClick={() => createGame("o")}
             >
@@ -270,7 +274,7 @@ export default function Home() {
 
           <div className="text-red-600 text-sm w-full text-center">{errorMsg}</div>
           <button
-            className={`${buttonDisable ? "bg-gray-300 text-gray-400" : "bg-red-500 text-white"} p-3 w-full`}
+            className={`${buttonDisable ? "theme-disabled" : "bg-red-500 text-white"} w-full p-3`}
             disabled={buttonDisable}
             onClick={findGame}
           >

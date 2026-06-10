@@ -2,32 +2,135 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --surface: #fffffa;
+  --border-neutral: grey;
+  --neutral-muted: #9ca3af;
+  --neutral-input: #e5e7eb;
+  --piece-text: #000000;
+  --switch-track: #d1d5db;
+  --switch-thumb: #ffffff;
+}
+
+[data-theme="dark"] {
+  --surface: #2d2d2d;
+  --border-neutral: #e5e7eb;
+  --neutral-muted: #404040;
+  --neutral-input: #404040;
+  --piece-text: #e5e7eb;
+  --switch-track: #404040;
+  --switch-thumb: #9ca3af;
+}
+
 body {
   font-family: "Sedgwick Ave", cursive;
   font-weight: 400;
   font-style: normal;
   width: 100%;
   min-height: 100vh;
-  background: #fffffa;
+  background: var(--surface);
+}
+
+.theme-surface {
+  background-color: var(--surface);
+}
+
+.theme-muted-text {
+  color: #6b7280;
+}
+
+[data-theme="dark"] .theme-muted-text {
+  color: var(--neutral-muted);
+}
+
+.theme-input {
+  background-color: var(--neutral-input);
+  color: var(--piece-text);
+}
+
+.theme-input::placeholder {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .theme-input::placeholder {
+  color: #6b7280;
+}
+
+.theme-disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .theme-disabled {
+  background-color: var(--neutral-input);
+  color: #6b7280;
+}
+
+.theme-nav-disabled {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .theme-nav-disabled {
+  color: var(--neutral-muted);
+}
+
+.theme-piece {
+  color: var(--piece-text);
+}
+
+[data-theme="dark"] .theme-thinking-text {
+  color: #ffffff;
+}
+
+.theme-switch-track {
+  background-color: var(--switch-track);
+}
+
+.theme-switch-thumb {
+  background-color: var(--switch-thumb);
+}
+
+[data-theme="dark"] .theme-switch-track {
+  background-color: #6b7280;
 }
 
 tr {
-  border-bottom: 2px solid grey;
+  border-bottom: 2px solid var(--border-neutral);
 }
 tr.large {
-  border-bottom: 2px dashed grey;
+  border-bottom: 2px dashed var(--border-neutral);
 }
 tr:last-child {
   border-bottom: none;
 }
 td {
-  border-right: 2px solid grey;
+  border-right: 2px solid var(--border-neutral);
 }
 td.large {
-  border-right: 2px dashed grey;
+  border-right: 2px dashed var(--border-neutral);
 }
 td:last-child {
   border-right: 2px solid transparent;
+}
+
+.playable-box tr {
+  border-bottom-color: #404040;
+}
+
+.playable-box td {
+  border-right-color: #404040;
+}
+
+.playable-box td:last-child {
+  border-right-color: transparent;
+}
+
+td.playable-box.large {
+  border-right-color: #404040;
+}
+
+tr.large:has(td.playable-box) {
+  border-bottom-color: #404040;
 }
 
 .spinner-container {

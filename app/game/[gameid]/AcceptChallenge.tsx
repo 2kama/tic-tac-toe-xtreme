@@ -21,18 +21,18 @@ const AcceptChallenge = ({ updateGame, playAs, gameid }: Props) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen absolute items-center justify-center">
-      <div className="flex flex-col bg-white fixed w-[90%] sm:w-[400px] box-border p-5">
-        <h1 className="text-center text-xl text-green-500 mb-10">Accept Challenge</h1>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="theme-surface box-border flex w-[90%] flex-col p-5 sm:w-[400px]">
+        <h1 className="mb-10 text-center text-xl text-green-500">Accept Challenge</h1>
         <input
-          className="w-full bg-gray-200 p-3 text-gray-500 mb-5"
+          className="theme-input mb-5 w-full p-3"
           placeholder="Your Name..."
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <button
-          className={`${!name ? "bg-gray-300 text-gray-400" : "bg-red-500 text-white"} p-3 w-full`}
+          className={`w-full p-3 ${!name ? "theme-disabled" : "bg-red-500 text-white"}`}
           disabled={!name}
           onClick={acceptChallenge}
         >

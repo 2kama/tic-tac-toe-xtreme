@@ -300,7 +300,7 @@ const VsComputer = () => {
     <div className="flex flex-col w-full min-h-screen items-center justify-center">
       <title>Tic Tac Toe Xtreme | vs Computer</title>
 
-      <header className="bg-white w-full fixed top-0 text-gray-500 text-center text-sm lg:text-lg p-4">
+      <header className="theme-surface theme-piece fixed top-0 w-full p-4 text-center text-sm lg:text-lg">
         <a href="/" className="fixed top-0 left-0 p-4 bg-red-500 text-white">
           &lt; Home
         </a>
@@ -308,7 +308,7 @@ const VsComputer = () => {
       </header>
 
       {thinking && (
-        <div className="flex gap-3 items-center opacity-80 bg-white fixed p-16">
+        <div className="theme-surface theme-thinking-text fixed inset-0 z-[9999] flex items-center justify-center gap-3 opacity-80">
           <div className="spinner-container">
             <div
               className="spinner"
