@@ -64,40 +64,40 @@ export default function Home() {
   const howToPlay: ReactNode[] = [
     <>
       <Image src={Play_01} alt="game box" width={150} />
-      <ColorXO text="This is a game box with nine(9) squares... typical tic-tac-toe" />
+      <ColorXO text="Each small box is a regular tic-tac-toe grid with nine squares." />
     </>,
     <>
       <Image src={Play_02} alt="larger tic-tac-toe" width={300} />
-      <ColorXO text="There are nine(9) game boxes in a game forming a larger tic-tac-toe board" />
+      <ColorXO text="Nine of these small boxes are arranged in a 3x3 grid to form one large board." />
     </>,
     <>
       <Image src={Play_03} alt="larger game win" width={300} />
-      <ColorXO text="The goal of the game is to win the larger tic-tac-toe board just as you would any tic-tac-toe game" />
+      <ColorXO text="To win, get three in a row on the big board — the same way you would in normal tic-tac-toe." />
     </>,
     <>
       <Image src={Play_04} alt="win a spot" width={150} />
-      <ColorXO text="You win a box when you win the game in that box." />
+      <ColorXO text="Win a small game and you claim that spot on the big board with a large x or o." />
     </>,
     <>
       <Image src={Play_05} alt="larger game win" width={300} />
-      <ColorXO text="Each player plays their turn in the game box that matches the position of the square where the opponent just played." />
-      <ColorXO text="i.e if player-X plays in square-2 of any game box, player-O's next play would be in game-box-2 ...and so on..." />
+      <ColorXO text="Where you play inside a small box tells your opponent which small box they must play in next." />
+      <ColorXO text="For example, if x plays in square 3 of any box, o must play somewhere inside box 3." />
     </>,
     <>
-      <ColorXO text="So try to think through your next play, because it determines where next your opponent would play." />
+      <ColorXO text="So plan your moves carefully — each one decides where your opponent goes next." />
     </>,
     <>
       <div className="flex gap-6">
         <Image src={Play_04} alt="larger game win" width={150} />
         <Image src={Play_06} alt="larger game win" width={150} />
       </div>
-      <ColorXO text="If a player is sent to a game-box that is unplayable, then they can choose from any available playable game boxes" />
-      <ColorXO text="Unplayable game-boxes are boxes that have either been won or have all squares filled." />
+      <ColorXO text="If you're sent to a box that's already finished, you can play in any box that's still open." />
+      <ColorXO text="A box is finished once someone has won it, or all nine squares inside it are filled." />
     </>,
     <>
       <Image src={Play_07} alt="win a spot" width={150} />
-      <ColorXO text="Playable/valid-play game boxes would have a light-green background. This should help you get the hang of the game." />
-      <ColorXO text="Enjoy!" />
+      <ColorXO text="Boxes you're allowed to play in are highlighted with a light-green background." />
+      <ColorXO text="You're ready — enjoy the game!" />
     </>
   ];
 
