@@ -5,7 +5,6 @@ import { DocumentData } from "../utils/firebase";
 import { DEFAULT_FEN, MovesType, TicTacToeXtreme } from "../utils/TicTacToeXtreme";
 import PlayGround from "../components/PlayGround";
 import Outcome from "../game/[gameid]/Outcome";
-import { computerLevels } from "../utils/constants";
 import { selectComputerMove } from "../utils/computerAI";
 import { useCheckDB } from "../hooks/useCheckDB";
 
@@ -23,21 +22,14 @@ const newGame = {
   o: randomPick === "o" ? "You" : "Computer"
 } as unknown as DocumentData;
 
+const MIN_COMPUTER_THINKING_MS = 3000;
+
 const VsComputer = () => {
   const [gameData, setGameData] = useState<DocumentData | null>(newGame);
   const { getLevel } = useCheckDB();
   const [level] = useState(getLevel());
-  const [timeOut, addTimeOut] = useState<boolean>(false);
-  const [thinking, setThinking] = useState<boolean>(false);
+  const [thinking, setThinking] = useState(false);
   const [whomToPlay, setWhomToPlay] = useState<"x" | "o">("x");
-
-  useEffect(() => {
-    const time = setTimeout(() => {
-      addTimeOut(true);
-    }, 4000);
-
-    return () => clearTimeout(time);
-  }, []);
 
   const game = new TicTacToeXtreme(gameData?.fen[gameData?.fen.length - 1]);
 
@@ -56,27 +48,37 @@ const VsComputer = () => {
     }
   };
 
-  const computerMove = () => {
-    const move = selectComputerMove(game.fen, level, computerPick, randomPick);
-
-    if (move) {
-      onPlay(move);
-    }
-
-    setThinking(false);
-  };
-
   useEffect(() => {
-    if (game.turn === computerPick && !gameData?.end && timeOut) {
-      setThinking(true);
-      setTimeout(
-        () => {
-          computerMove();
-        },
-        level === computerLevels.easy ? 2000 : level === computerLevels.intermediate ? 3000 : 5000
-      );
-    }
-  }, [gameData, timeOut]);
+    if (game.turn !== computerPick || gameData?.end) return;
+
+    setThinking(true);
+    const thinkingStartedAt = Date.now();
+    let cancelled = false;
+    let finishTimeoutId: number | undefined;
+
+    const startTimeoutId = window.setTimeout(() => {
+      const move = selectComputerMove(game.fen, level, computerPick, randomPick);
+      const remaining = Math.max(0, MIN_COMPUTER_THINKING_MS - (Date.now() - thinkingStartedAt));
+
+      finishTimeoutId = window.setTimeout(() => {
+        if (cancelled) return;
+
+        if (move) {
+          onPlay(move);
+        }
+
+        setThinking(false);
+      }, remaining);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(startTimeoutId);
+      if (finishTimeoutId !== undefined) {
+        window.clearTimeout(finishTimeoutId);
+      }
+    };
+  }, [gameData, level]);
 
   return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center">

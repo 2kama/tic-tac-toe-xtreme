@@ -1,11 +1,4 @@
-import {
-  cancelOpponentWinBoxScore,
-  computerLevels,
-  drawTheGameScore,
-  normalPlayScore,
-  winBoxScore,
-  winTheGameScore
-} from "./constants";
+import { computerLevels, drawTheGameScore, winTheGameScore } from "./constants";
 import { MovesType, TicTacToeXtreme } from "./TicTacToeXtreme";
 
 const META_LINES = [
@@ -19,21 +12,10 @@ const META_LINES = [
   [2, 4, 6]
 ];
 
-const LOOKAHEAD_DEPTH = {
-  [computerLevels.intermediate]: 2,
-  [computerLevels.hard]: 5
-} as const;
-
-const WIN_CONDITIONS: Record<number, number[][]> = {
-  0: [[1, 2], [3, 6], [4, 8]],
-  1: [[0, 2], [4, 7]],
-  2: [[0, 1], [5, 8], [4, 6]],
-  3: [[0, 6], [4, 5]],
-  4: [[1, 7], [3, 5], [0, 8], [2, 6]],
-  5: [[2, 8], [3, 4]],
-  6: [[0, 3], [7, 8], [2, 4]],
-  7: [[1, 4], [6, 8]],
-  8: [[2, 5], [6, 7], [0, 4]]
+const LOOKAHEAD_DEPTH: Record<string, number> = {
+  [computerLevels.easy]: 2,
+  [computerLevels.intermediate]: 4,
+  [computerLevels.hard]: 6
 };
 
 const isPlayableBox = (box: number, checkToken: string[]) => {
@@ -65,12 +47,6 @@ const playMove = (fen: string, move: MovesType) => {
   return game.play(move);
 };
 
-const blocksOpponentMiniWin = (miniBoard: string, cellPlayed: number, opponent: "x" | "o") => {
-  const cells = miniBoard.split("");
-  const conditions = WIN_CONDITIONS[cellPlayed];
-  return conditions.some((line) => line.every((index) => cells[index] === opponent));
-};
-
 const evaluateMetaBoard = (token: string[], computer: "x" | "o", human: "x" | "o") => {
   const meta = token[9].split("");
   let score = 0;
@@ -93,36 +69,6 @@ const evaluateMetaBoard = (token: string[], computer: "x" | "o", human: "x" | "o
   if (meta[4] === human) score -= 1;
 
   return score;
-};
-
-const scoreImmediateMove = (fen: string, move: MovesType, computer: "x" | "o", human: "x" | "o") => {
-  const before = new TicTacToeXtreme(fen);
-  const result = playMove(fen, move);
-  const after = new TicTacToeXtreme(result.fen);
-  const metaBonus =
-    evaluateMetaBoard(after.token, computer, human) - evaluateMetaBoard(before.token, computer, human);
-
-  if (result.end) {
-    if (after.whoWon === computer) return winTheGameScore + metaBonus;
-    if (after.whoWon === "d") return drawTheGameScore + metaBonus;
-    return -winTheGameScore + metaBonus;
-  }
-
-  const gameState = after.token[9].split("");
-  const targetGame = move.game;
-  const targetCell = move.row * 3 + move.col;
-  const miniBoard = result.fen.split("|")[targetGame];
-
-  if (gameState[targetGame] === computer) return winBoxScore + metaBonus;
-  if (blocksOpponentMiniWin(miniBoard, targetCell, human)) return cancelOpponentWinBoxScore + metaBonus;
-
-  return normalPlayScore + metaBonus;
-};
-
-const pickBestMoves = (moves: MovesType[], scores: number[]) => {
-  const bestScore = Math.max(...scores);
-  const bestMoves = moves.filter((_, index) => scores[index] === bestScore);
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
 };
 
 const terminalScore = (fen: string, computer: "x" | "o", human: "x" | "o") => {
@@ -195,14 +141,7 @@ export const selectComputerMove = (
   const moves = getLegalMoves(fen, computer);
   if (!moves.length) return null;
 
-  if (level === computerLevels.easy) {
-    const scores = moves.map((move) => scoreImmediateMove(fen, move, computer, human));
-    return pickBestMoves(moves, scores);
-  }
-
-  const lookahead =
-    level === computerLevels.hard ? LOOKAHEAD_DEPTH[computerLevels.hard] : LOOKAHEAD_DEPTH[computerLevels.intermediate];
-
+  const lookahead = LOOKAHEAD_DEPTH[level] ?? LOOKAHEAD_DEPTH[computerLevels.easy];
   let bestScore = -Infinity;
   let bestMoves: MovesType[] = [];
 
