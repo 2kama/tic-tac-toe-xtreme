@@ -9,23 +9,32 @@ import { selectComputerMove } from "../utils/computerAI";
 import { useCheckDB } from "../hooks/useCheckDB";
 
 const playAs: Array<"x" | "o"> = ["o", "x"];
-const randomPick: "o" | "x" = playAs[Math.floor(Math.random() * playAs.length)];
-const computerPick = randomPick === "x" ? "o" : "x";
 
-const newGame = {
-  end: false,
-  fen: [DEFAULT_FEN],
-  moves: [81],
-  outCome: "X to play",
-  timestamp: new Date().getTime(),
-  x: randomPick === "x" ? "You" : "Computer",
-  o: randomPick === "o" ? "You" : "Computer"
-} as unknown as DocumentData;
+const createVsComputerGame = () => {
+  const randomPick: "x" | "o" = playAs[Math.floor(Math.random() * playAs.length)];
+  const computerPick: "x" | "o" = randomPick === "x" ? "o" : "x";
+
+  const gameData = {
+    end: false,
+    fen: [DEFAULT_FEN],
+    moves: [81],
+    outCome: "X to play",
+    timestamp: Date.now(),
+    x: randomPick === "x" ? "You" : "Computer",
+    o: randomPick === "o" ? "You" : "Computer"
+  } as unknown as DocumentData;
+
+  return { gameData, randomPick, computerPick };
+};
 
 const MIN_COMPUTER_THINKING_MS = 3000;
 
 const VsComputer = () => {
-  const [gameData, setGameData] = useState<DocumentData | null>(newGame);
+  const initialGame = createVsComputerGame();
+  const [gameData, setGameData] = useState<DocumentData | null>(initialGame.gameData);
+  const [randomPick, setRandomPick] = useState<"x" | "o">(initialGame.randomPick);
+  const [computerPick, setComputerPick] = useState<"x" | "o">(initialGame.computerPick);
+  const [gameKey, setGameKey] = useState(0);
   const { getLevel } = useCheckDB();
   const [level] = useState(getLevel());
   const [thinking, setThinking] = useState(false);
@@ -40,12 +49,22 @@ const VsComputer = () => {
       const result = game.play(data);
       setGameData((prev) => ({
         ...prev,
-        fen: [...gameData?.fen, result.fen],
+        fen: [...(gameData?.fen ?? []), result.fen],
         end: result.end,
         outCome: result.outCome,
-        moves: [...gameData?.moves, data.game * 9 + data.row * 3 + data.col]
+        moves: [...(gameData?.moves ?? []), data.game * 9 + data.row * 3 + data.col]
       }));
     }
+  };
+
+  const replay = () => {
+    const freshGame = createVsComputerGame();
+    setGameData(freshGame.gameData);
+    setRandomPick(freshGame.randomPick);
+    setComputerPick(freshGame.computerPick);
+    setWhomToPlay("x");
+    setThinking(false);
+    setGameKey((key) => key + 1);
   };
 
   useEffect(() => {
@@ -78,7 +97,7 @@ const VsComputer = () => {
         window.clearTimeout(finishTimeoutId);
       }
     };
-  }, [gameData, level]);
+  }, [gameData, level, computerPick, randomPick]);
 
   return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center">
@@ -91,23 +110,6 @@ const VsComputer = () => {
         Tic Tac Toe Xtreme
       </header>
 
-      {thinking && (
-        <div className="theme-surface theme-thinking-text fixed inset-0 z-[9999] flex items-center justify-center gap-3 opacity-80">
-          <div className="spinner-container">
-            <div
-              className="spinner"
-              style={{
-                width: 20,
-                height: 20,
-                border: `2px solid green`,
-                borderColor: "green transparent transparent transparent"
-              }}
-            ></div>
-          </div>
-          Computer is thinking...
-        </div>
-      )}
-
       {gameData && (
         <>
           <div className="w-full text-center mb-5 text-red-500">{level} Mode</div>
@@ -115,12 +117,17 @@ const VsComputer = () => {
             <PlayGround
               allowPlay={!game.isGameOver && game.turn === randomPick}
               onPlay={onPlay}
-              gameId={"vscomputer"}
+              gameId={`vscomputer-${gameKey}`}
               fen={game.fen}
               highlightSquares={[gameData.moves[gameData.moves.length - 1]]}
             />
           </div>
-          <Outcome computer={true} gameData={{ ...gameData, outCome: game.outCome }} />
+          <Outcome
+            computer={true}
+            computerThinking={thinking}
+            gameData={{ ...gameData, outCome: game.outCome }}
+            onReplay={replay}
+          />
         </>
       )}
     </div>

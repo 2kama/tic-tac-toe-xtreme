@@ -10,6 +10,8 @@
   --piece-text: #000000;
   --switch-track: #d1d5db;
   --switch-thumb: #ffffff;
+  --active-player-bg: #ecfdf5;
+  --active-player-border: #86efac;
 }
 
 [data-theme="dark"] {
@@ -20,6 +22,8 @@
   --piece-text: #e5e7eb;
   --switch-track: #404040;
   --switch-thumb: #9ca3af;
+  --active-player-bg: #1a3328;
+  --active-player-border: #4ade80;
 }
 
 body {
@@ -78,8 +82,25 @@ body {
   color: var(--piece-text);
 }
 
-[data-theme="dark"] .theme-thinking-text {
-  color: #ffffff;
+.player-slot-active {
+  background-color: var(--active-player-bg);
+  box-shadow: 0 0 0 1px var(--active-player-border);
+  opacity: 1;
+}
+
+.hourglass-spin {
+  display: inline-block;
+  animation: hourglass-flip 1.2s ease-in-out infinite;
+}
+
+@keyframes hourglass-flip {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
 }
 
 .theme-switch-track {

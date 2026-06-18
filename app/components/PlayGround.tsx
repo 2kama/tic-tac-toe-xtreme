@@ -84,13 +84,9 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
     const isRedO = gameDecision === "o" && winPatterns.includes(row * 3 + col);
 
     if (value === "x") {
-      return (
-        <div className={`${bigWinClassName} ${isRedX ? "text-red-500" : "theme-piece"}`}>x</div>
-      );
+      return <div className={`${bigWinClassName} ${isRedX ? "text-red-500" : "theme-piece"}`}>x</div>;
     } else if (value === "o") {
-      return (
-        <div className={`${bigWinClassName} ${isRedO ? "text-red-500" : "theme-piece"}`}>o</div>
-      );
+      return <div className={`${bigWinClassName} ${isRedO ? "text-red-500" : "theme-piece"}`}>o</div>;
     } else if (value === "d") {
       return (
         <div className={`${bigWinClassName}`}>
@@ -129,13 +125,7 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
     const gameDecision = token[9].split("")[game];
     const winPatterns = gameDecision !== "-" ? checkWinPattern(gameDecision as "x" | "o", cellValue) : [];
 
-    const ShowCellValue = ({
-      cellValue,
-      data
-    }: {
-      cellValue: string;
-      data: MovesType;
-    }) => {
+    const ShowCellValue = ({ cellValue, data }: { cellValue: string; data: MovesType }) => {
       const isHighlighted = highlightSquares?.includes(data.game * 9 + data.row * 3 + data.col);
       const cellClassName = `${isHighlighted ? "bg-yellow-100 " : ""}relative h-full w-1/3`;
 
@@ -213,20 +203,20 @@ const PlayGround = ({ gameId, fen, highlightSquares = [], allowPlay = true, onPl
                 const playable = isPlayable(rowIndex * 3 + colIndex);
 
                 return (
-                <td
-                  key={`row-${rowIndex}--col-${colIndex}`}
-                  className={`large relative h-full w-1/3 p-[4%] md:p-[7%] ${playable ? "playable-box bg-green-50 " : ""}`}
-                >
-                  <div className="relative h-full w-full">
-                    <DisplayGameBox
-                      tokenSpread={ThreeByThreeBox(token)[row][column]}
-                      game={rowIndex * 3 + colIndex}
-                      isPlayableBox={playable}
-                    />
-                    <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />
-                  </div>
-                </td>
-              );
+                  <td
+                    key={`row-${rowIndex}--col-${colIndex}`}
+                    className={`large relative h-full w-1/3 p-[4%] md:p-[7%] ${playable ? "playable-box bg-green-50 " : ""}`}
+                  >
+                    <div className="relative h-full w-full">
+                      <DisplayGameBox
+                        tokenSpread={ThreeByThreeBox(token)[row][column]}
+                        game={rowIndex * 3 + colIndex}
+                        isPlayableBox={playable}
+                      />
+                      <BoxWin value={ThreeByThreeBox(token[9].split(""))[row][column]} row={rowIndex} col={colIndex} />
+                    </div>
+                  </td>
+                );
               })}
             </tr>
           ))}
