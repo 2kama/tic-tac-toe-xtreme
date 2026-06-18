@@ -1,4 +1,11 @@
-import { computerLevels, drawTheGameScore, winTheGameScore } from "./constants";
+import {
+  cancelOpponentWinBoxScore,
+  computerLevels,
+  drawTheGameScore,
+  normalPlayScore,
+  winBoxScore,
+  winTheGameScore
+} from "./constants";
 import { MovesType, TicTacToeXtreme } from "./TicTacToeXtreme";
 
 const META_LINES = [
@@ -16,6 +23,18 @@ const LOOKAHEAD_DEPTH = {
   [computerLevels.intermediate]: 2,
   [computerLevels.hard]: 5
 } as const;
+
+const WIN_CONDITIONS: Record<number, number[][]> = {
+  0: [[1, 2], [3, 6], [4, 8]],
+  1: [[0, 2], [4, 7]],
+  2: [[0, 1], [5, 8], [4, 6]],
+  3: [[0, 6], [4, 5]],
+  4: [[1, 7], [3, 5], [0, 8], [2, 6]],
+  5: [[2, 8], [3, 4]],
+  6: [[0, 3], [7, 8], [2, 4]],
+  7: [[1, 4], [6, 8]],
+  8: [[2, 5], [6, 7], [0, 4]]
+};
 
 const isPlayableBox = (box: number, checkToken: string[]) => {
   return (
@@ -46,13 +65,10 @@ const playMove = (fen: string, move: MovesType) => {
   return game.play(move);
 };
 
-const terminalScore = (fen: string, computer: "x" | "o", human: "x" | "o") => {
-  const state = new TicTacToeXtreme(fen);
-
-  if (!state.isGameOver) return null;
-  if (state.whoWon === computer) return winTheGameScore * 100;
-  if (state.whoWon === human) return -winTheGameScore * 100;
-  return drawTheGameScore;
+const blocksOpponentMiniWin = (miniBoard: string, cellPlayed: number, opponent: "x" | "o") => {
+  const cells = miniBoard.split("");
+  const conditions = WIN_CONDITIONS[cellPlayed];
+  return conditions.some((line) => line.every((index) => cells[index] === opponent));
 };
 
 const evaluateMetaBoard = (token: string[], computer: "x" | "o", human: "x" | "o") => {
@@ -77,6 +93,45 @@ const evaluateMetaBoard = (token: string[], computer: "x" | "o", human: "x" | "o
   if (meta[4] === human) score -= 1;
 
   return score;
+};
+
+const scoreImmediateMove = (fen: string, move: MovesType, computer: "x" | "o", human: "x" | "o") => {
+  const before = new TicTacToeXtreme(fen);
+  const result = playMove(fen, move);
+  const after = new TicTacToeXtreme(result.fen);
+  const metaBonus =
+    evaluateMetaBoard(after.token, computer, human) - evaluateMetaBoard(before.token, computer, human);
+
+  if (result.end) {
+    if (after.whoWon === computer) return winTheGameScore + metaBonus;
+    if (after.whoWon === "d") return drawTheGameScore + metaBonus;
+    return -winTheGameScore + metaBonus;
+  }
+
+  const gameState = after.token[9].split("");
+  const targetGame = move.game;
+  const targetCell = move.row * 3 + move.col;
+  const miniBoard = result.fen.split("|")[targetGame];
+
+  if (gameState[targetGame] === computer) return winBoxScore + metaBonus;
+  if (blocksOpponentMiniWin(miniBoard, targetCell, human)) return cancelOpponentWinBoxScore + metaBonus;
+
+  return normalPlayScore + metaBonus;
+};
+
+const pickBestMoves = (moves: MovesType[], scores: number[]) => {
+  const bestScore = Math.max(...scores);
+  const bestMoves = moves.filter((_, index) => scores[index] === bestScore);
+  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+};
+
+const terminalScore = (fen: string, computer: "x" | "o", human: "x" | "o") => {
+  const state = new TicTacToeXtreme(fen);
+
+  if (!state.isGameOver) return null;
+  if (state.whoWon === computer) return winTheGameScore * 100;
+  if (state.whoWon === human) return -winTheGameScore * 100;
+  return drawTheGameScore;
 };
 
 const evaluatePosition = (fen: string, computer: "x" | "o", human: "x" | "o") => {
@@ -141,7 +196,8 @@ export const selectComputerMove = (
   if (!moves.length) return null;
 
   if (level === computerLevels.easy) {
-    return moves[Math.floor(Math.random() * moves.length)];
+    const scores = moves.map((move) => scoreImmediateMove(fen, move, computer, human));
+    return pickBestMoves(moves, scores);
   }
 
   const lookahead =
@@ -162,5 +218,5 @@ export const selectComputerMove = (
     }
   }
 
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)] ?? moves[Math.floor(Math.random() * moves.length)];
+  return bestMoves[Math.floor(Math.random() * bestMoves.length)] ?? moves[0];
 };
